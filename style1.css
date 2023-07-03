@@ -1,0 +1,167 @@
+body {
+    font-family: Arial;
+    font-size: 12px;
+    color: black;
+    background-color: antiquewhite;
+  }
+
+div{
+    margin: 5px;
+  }
+
+  li{
+    list-style-type: none;
+  }
+
+  p{
+    float: left;
+  }
+  
+a.logo{
+    background: rgb(255, 219, 172);
+    font-size: 15px;
+}
+
+#header{
+    height: 25px;
+    width:100%;
+    padding: 20px;
+    background: rgb(255, 219, 172);
+    text-align: center;
+}
+
+header li{
+    float: left;
+    list-style-type: none;
+    width: 25%;
+}
+
+header li a{
+    display:inline-block;
+    height: 15px;
+    width: 100%;
+    background: rgb(255, 219, 172);
+    text-align: center;
+    
+}
+
+header li a:hover{
+    background-color: rgb(255, 145, 0);
+    color:black;
+}
+
+a{
+    text-decoration: none;
+}
+
+#banner span{
+    display: flex;
+}
+
+#banner img{
+    flex:1;
+}
+
+#banner .button{
+    width: 80%;
+    background-color: rgb(255, 164, 121);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+#banner a.button:hover{
+    background-color: rgb(255, 207, 145);
+    color: black;
+}
+
+div.posts{
+    display:flex;
+}
+
+.posts p{
+    flex:1;
+}
+
+.posts article{
+    padding:5px;
+    margin: 3px;
+    background-color: rgb(252, 248, 242);
+}
+h1{
+    font-size: 50px;
+}
+
+h2{
+    font-size: 20px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+img{
+    float: right;
+    width:50%;
+    margin-left:10px;
+}
+
+.button {
+    list-style-type: none;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgb(255, 164, 121);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+
+a.button:hover{
+    background-color: rgb(255, 207, 145);
+    color: black;
+  }
+
+  .features div{
+    width: 100%;
+    margin: auto;
+    padding:8px;
+    display: inline-block;
+    background-color: rgb(255, 207, 145);
+    box-shadow: 0px 0px 5px rgba(255, 145, 0,0.5);
+    
+
+  }
+
+input:focus{
+    top:0px;
+    position:sticky;
+    width: 100%;
+    height: 20px;
+    padding:5px;
+}
+
+
+#menu li{
+    list-style-type: none;
+    display:inline-block;
+}
+#menu li a{
+    padding:8px 16px;
+}
+#menu li a:hover{
+    background-color: rgb(255, 145, 0);
+    color:black;
+}
+
+.contact{
+    display: flex;
+}
+.contact li{
+    flex:1;
+    margin: 8px;
+}
+
+#footer{
+    height: 25px;
+    width:100%;
+    padding-bottom: 10px;
+    background: rgb(255, 219, 172);
+    text-align: center;
+}
