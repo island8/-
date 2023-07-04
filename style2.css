@@ -1,0 +1,207 @@
+/* Reset default styles */
+body{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align:auto;
+  background: transparent;
+}
+
+body{
+  line-height: 1;
+}
+
+ul{
+  list-style: none;
+}
+
+
+table{
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
+  color: #2d2d2d;
+  background: #f8f8f8;
+}
+
+a{
+  color: #2d2d2d;
+  text-decoration: none;
+}
+
+.logo{
+    height: 25px;
+    width:100%;
+    text-align: center;
+    display:block ;
+    border-bottom: #2d2d2d 3px solid;
+}
+
+header li{
+    display:table;
+    margin: 0 auto;/*水平居中*/
+    padding: 3px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;/*以相等的边距排列项目*/
+}
+
+/* Sidebar */
+.button{
+    width: auto;
+    background: #bfa67a;
+    padding: 20px;
+}
+
+ a.button:hover{
+    display:inline-block;
+    border:#dbb087 solid 5px;
+    background-color: #6a5634;
+    color:#f8f8f8;
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+  }/*沿水平主轴从左向右排列，实现侧边栏的效果*/
+
+#sidebar {
+    width: 200px;
+    background: #bfa67a;
+    padding: 20px;
+  }  
+
+#menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#menu li {
+    margin-bottom: 10px;
+}
+
+#menu a {
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+#menu a:hover {
+  color: #a86927;
+}
+
+/* Main Content */
+#main {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+/* Banner */
+#banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+#banner .content {
+    width: 60%;
+}
+
+#banner header h1 {
+    font-size: 48px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#banner p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+#banner .actions {
+    margin-top: 30px;
+}
+
+#banner .button {
+    display: inline-block;
+    background: #bfa67a;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+#banner .button:hover {
+    background: #dcdcdc;
+}
+
+/* Features */
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.features article {
+    width: calc(50% - 20px);
+    margin-bottom: 40px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.features article header h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.features article p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* Posts */
+.posts article {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.posts article .content {
+    flex-grow: 1;
+    padding-left: 20px;
+}
+
+.posts article .content h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.posts article .content p {
+    color: #666;
+}
+
+.posts article .image {
+    width: 200px;
+}
+
+.posts article .image img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
