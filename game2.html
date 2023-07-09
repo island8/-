@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>颜色转盘游戏</title>
+    <style>
+        #gameContainer {
+            text-align: center;
+        }
+        #score {
+            float: right;
+        }
+        @keyframes colorChange {
+            0% {
+                color: red;
+            }
+            20% {
+                color: blue;
+            }
+            40% {
+                color: green;
+            }
+            60% {
+                color: orange;
+            }
+            80% {
+                color: purple;
+            }
+            100% {
+                color: yellow;
+            }
+        }
+
+        h1 {
+            animation-name: colorChange;
+            animation-duration: 5s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <h1>给你点颜色看看</h1>
+        <button id="startButton">开始游戏</button>
+    </div>
+    <script>
+        // 启动游戏
+        document.addEventListener('DOMContentLoaded', function() {
+            const startButton = document.getElementById('startButton');
+            startButton.addEventListener('click', startGame);
+        });
+
+        function startGame() {
+            window.location.href = 'gameScreen.html';
+        }
+    </script>
+</body>
+</html>

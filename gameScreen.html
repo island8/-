@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏页面</title>
+    <style>
+        #gameScreen {
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .rotate {
+            animation: rotate 2s linear infinite/*动画持续时间 保持相同速度 无限执行*/
+        }
+
+        /*定义转盘旋转的动画*/
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }/*开始的时候不旋转*/
+
+            100% {
+                transform: rotate(360deg);
+            }/*结束的时候旋转360度*/
+        }
+
+        .colorlump {
+            background: #ee7752;
+            width: 20px;
+            height: 15px;
+            display: inline-block;
+            border-radius: 5px;
+        }/*提醒玩家需要点击的色块的元素样式*/
+    </style>
+</head>
+
+<body>
+    <div id="gameScreen">
+        <h2 id="timer">剩余时间: <progress id="progressBar" value="0" max="60"></progress></h2>
+        <div id="score">得分: <span id="currentScore">0</span>
+            色块：<div class="colorlump" id="colorlump"></div><!--提示玩家需要点击的颜色部分-->
+        </div>
+        <canvas id="myCanvas" class="rotate" width="600" height="600"></canvas><!--设置画布来绘制转盘-->
+    </div>
+    <script>
+
+        const currentScoreDisplay = document.getElementById('currentScore');
+        const colorWheel = document.getElementById('myCanvas');//这个方法是用来获取渲染上下文和它的绘画功能
+
+        const gameDuration = 60; // 游戏时长，单位：秒
+        let countdown; // 计时器引用
+        let countdownValue; // 倒计时剩余时间
+        let currentScore = 0; // 当前得分
+        let maxScore = 0; // 最高得分
+
+        const PieChart = function (cnavasId, ctx) {//this指代的都是PieChart对象
+            this.canvas = CanvasM = document.getElementById(cnavasId)
+            this.ctx = this.canvas.getContext('2d')
+            // 绘制饼图中心
+            this.W = this.ctx.canvas.width;
+            this.H = this.ctx.canvas.height;
+            // 圆心
+            this.x0 = this.W / 2;
+            this.y0 = this.H / 2;
+            // 半径
+            this.radius = this.W / 2 - 15;
+            this.pieIndex = -1
+        }
+
+        // 初始化
+        PieChart.prototype.init = function (data, pointer, click) {
+            // 1、准备数据
+            this.drawPie(data, pointer, click)
+        }
+
+        // 画饼图
+        PieChart.prototype.drawPie = function (data, pointer, click) {
+            let that = this;// 保存PieChart对象的引用
+            // 1、转化弧度
+            let angleList = this.transformAngle(data)
+            // 2、绘制饼图
+            let startAngle = 0;//设置起始角度为0
+            angleList.forEach((item, index) => {
+                // 当前结束的弧度等于下一次的起始弧度
+                let endAngle = startAngle + item.angle
+                this.ctx.beginPath()//开始新路径
+                this.ctx.moveTo(that.x0, that.y0)//移到圆心
+                this.ctx.arc(that.x0, that.y0, that.radius, startAngle, endAngle);//画扇形
+                const outColor = this.ctx.fillStyle = colorList[index]//设置扇形颜色
+                this.ctx.fill()//填充扇形
+
+                // isPointInPath() 是判断所指定的点是否在所绘制的弧线上，是则返回true，不是则返回false
+                // 饼图事件：用于判断鼠标是否在扇形上
+                if (pointer && that.ctx.isPointInPath(pointer.x, pointer.y)) {
+                    // 排除圆心坐标，鼠标移动到圆心时，不需要触发事件
+                    if (pointer.x !== this.x0 && pointer.y !== this.y0) {
+                        // 重新绘制当前扇形
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.x0, this.y0);
+                        this.ctx.arc(this.x0, this.y0, this.hoverRadius, startAngle, endAngle, false)
+                        // 绘制阴影
+                        this.ctx.shadowBlur = 10;
+                        this.ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+                        this.ctx.fill()
+                        if (click) {
+                            pieChart.onClick(item, index)//触发点击事件
+                        }
+                    }
+                }
+                // 下一次开始弧度等于这一次结束弧度
+                startAngle = endAngle;
+            })
+        }
+
+        // 点击事件回调
+        PieChart.prototype.onClick = function (item, index) {
+            return function () {
+                return { ...item, index };// 返回一个新的对象，包含了点击的扇形的信息和索引
+            }
+        }
+
+        // 转化弧度，返回的数据应该包含弧度
+        PieChart.prototype.transformAngle = function (data) {
+            let total = 0
+            data.forEach(el => total += el.num)//计算所有扇形的总数
+
+            // 创建弧度属性，添加到每个对象内
+            data.forEach(item => {
+                const angle = item.num / total * Math.PI * 2;//计算每个扇形的角度
+                item['angle'] = angle;//将计算出的角度添加到扇形的信息中
+            })
+            return data;
+        }
+
+        // 自定义颜色
+        const colorList = ['#ee7752', '#e73c7e']
+
+        // 数据准备
+        const data = [
+            { color: colorList[0], num: 50 },
+            { color: colorList[1], num: 50 },
+        ]
+
+        var clickNum = 0;
+
+        // 初始化饼图，饼图构造函数this，无法在外部访问，因为没有内部赋值
+        const pieChart = new PieChart('myCanvas', data)
+        pieChart.init(data)
+
+        countdownValue = gameDuration;//设置倒计时的初始值为游戏的持续时间
+        currentScore = 0;
+        startCountdown();//开始倒计时
+
+        // 监听鼠标点击扇形事件，实现点击一次转盘就更新一次颜色的效果
+        pieChart.canvas.addEventListener('click', function (event) {
+            // 获取点击坐标
+            const x = event.offsetX;
+            const y = event.offsetY;
+            // console.log(x, y);
+
+            console.log("clickNum", clickNum)
+
+            updateWheelColors()//更新颜色
+
+            //创建数据绘制饼图
+            var data = [
+                { color: colorList[0], num: 50 + clickNum * -2 },
+                { color: colorList[1], num: 50 + clickNum * 2 },
+            ]// color属性设置颜色，num属性设置这部分在饼图中的比例
+
+            // 清空画布
+            pieChart.ctx.clearRect(0, 0, 600, 600)
+            // 重绘饼状图,将鼠标坐标进行传参
+            pieChart.init(data, { x, y }, 'click')
+
+            // 事件回调函数
+            pieChart.onClick = function (data, index) {
+                pieChart.pieIndex = index
+                console.log(data, index);
+                // 如果点击的扇形颜色是colorList[0]
+                if (data.color == colorList[0]) {
+                    clickNum += 1;//点击正确则得一分
+                    currentScore++;
+                    updateScoreDisplay()
+                    
+                } else {// 如果点击的扇形颜色不是colorList[0]，游戏结束
+                    gameOver();
+                }
+            }
+        })
+
+        // 更新分数显示
+        function updateScoreDisplay() {
+            currentScoreDisplay.innerText = currentScore;
+        }
+
+        // 启动倒计时
+        function startCountdown() {
+            countdown = setInterval(updateCountdown, 1000);//每隔一秒
+        }
+
+        // 更新倒计时显示
+        function updateCountdown() {
+            countdownValue--;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.value = gameDuration - countdownValue;//游戏总时长-剩余的时间=过去的时间 让进度条能正常显示
+            if (countdownValue === 0) {
+                gameOver();
+            }
+        }
+
+        // 结束游戏
+        function gameOver() {
+            clearInterval(countdown);//结束倒计时
+            showGameOverPopup();
+
+        }
+
+        // 显示游戏结束弹窗
+        function showGameOverPopup() {
+            const popupMessage = countdownValue === 0 ? '时间到！' : '选择错误！';//根据倒计时的值决定弹窗的消息
+            maxScore = Math.max(currentScore, maxScore);
+        //设置弹窗的样式
+            const popupContent = `最终得分：${currentScore}<br>最高得分：${maxScore}`;
+            const popup = document.createElement('div');
+            popup.innerHTML = popupContent;
+            popup.style.position = 'absolute';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';//使弹窗居中显示
+            popup.style.padding = '20px';
+            popup.style.backgroundColor = '#FFF';
+            popup.style.boxShadow = '0 0 5px rgba(0, 0, 0, 0.3)';//设置弹窗阴影
+            popup.style.textAlign = 'center';
+
+            const restartButton = document.createElement('button'); // 创建一个新的button元素作为重新开始按钮
+            restartButton.innerText = '重新开始'; // 设置重新开始按钮的文本
+            restartButton.addEventListener('click', restartGame); // 当点击重新开始按钮时，调用 restartGame 函数
+            popup.appendChild(document.createElement('br')); // 在弹窗中添加一个新的换行元素
+            popup.appendChild(document.createElement('br')); // 在弹窗中添加一个新的换行元素
+            popup.appendChild(restartButton); // 在弹窗中添加重新开始按钮
+
+            document.body.appendChild(popup); // 将弹窗添加到页面中
+
+            colorWheel.classList.remove('rotate');//停止转盘旋转
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            location.reload();//重新加载页面
+        }
+
+        // 更新轮盘颜色
+        function updateWheelColors() {
+            var rand = Math.random();//生成随机数
+            console.log("rand",rand)
+            // 生成新的颜色并更新颜色列表
+            colorList[0] = generateNewColor(rand*0.9)//使随机生成的两个颜色始终是不同的
+            colorList[1] = generateNewColor(rand)
+            // 更新页面上的颜色块的背景色，即玩家需要点击的色块
+            document.getElementById('colorlump').style.background = colorList[0]
+        }
+
+        // 生成新的颜色
+        function generateNewColor(rand) {
+            return "hsl(" + 360 * rand + ',' +//色相
+                 (25 + 70 * rand) + '%,' + //饱和度
+                 (85 + 10 * rand) + '%)';//亮度
+        }//使用hsl颜色模式生成新的颜色
+
+    </script>
+</body>
+
+</html>
